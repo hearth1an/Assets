@@ -8,38 +8,38 @@ public class Counter : MonoBehaviour
     private float _delay = 0.5f;
     private bool _isCounting = false;
 
-    private Coroutine _counterCoroutine;
+    private Coroutine _coroutine;
     private WaitForSeconds _waitForSeconds;
+
+    public event System.Action<int> CounterUpdated;
 
     private void Start()
     {
         _waitForSeconds = new WaitForSeconds(_delay);
     }
 
-    public void ToggleCounter()
+    public void Toggle()
     {
         if (_isCounting)
         {
-            StopCoroutine(_counterCoroutine);
+            StopCoroutine(_coroutine);
             _isCounting = false;
         }
         else
         {
-            _counterCoroutine = StartCoroutine(CounterRoutine());
+            _coroutine = StartCoroutine(Routine());
             _isCounting = true;
         }        
     }    
 
-    private IEnumerator CounterRoutine()
+    private IEnumerator Routine()
     {
         while (true)
         {
             yield return _waitForSeconds;
 
             _minNumber++;
-            OnCounterUpdated?.Invoke(_minNumber);
+            CounterUpdated?.Invoke(_minNumber);
         }
     }
-
-    public event System.Action<int> OnCounterUpdated;
 }
